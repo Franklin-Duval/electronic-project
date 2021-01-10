@@ -1,0 +1,108 @@
+.image{
+    position: absolute;
+    left: 200px;
+    top: 100px;
+    margin-bottom: 20px;
+}
+
+.green{
+    background-color: rgb(77, 165, 77);
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.orange{
+    background-color: rgb(151, 151, 54);
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.red{
+    background-color: rgb(211, 87, 87);
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.south{
+    border: 1px solid black;
+    background-color: beige;
+    width: 40px;
+    position: absolute;
+    left: 800px;
+    top: 820px;
+}
+
+.north{
+    border: 1px solid black;
+    background-color: beige;
+    width: 40px;
+    position: absolute;
+    left: 470px;
+    top: 180px;
+}
+
+.west{
+    border: 1px solid black;
+    background-color: beige;
+    width: 120px;
+    position: absolute;
+    left: 300px;
+    top: 770px;
+    display: flex;
+    flex-direction: row;
+}
+
+.east{
+    border: 1px solid black;
+    background-color: beige;
+    width: 120px;
+    position: absolute;
+    left: 875px;
+    top: 300px;
+    display: flex;
+    flex-direction: row;
+}
+
+.timer{
+    border: 5px solid black;
+    padding: 20px;
+    position: absolute;
+    left: 1200px;
+    top: 100px;
+}
+
+.timer h1 {
+    font-size: 35px;
+    margin: 10px;
+    font-family: 'Times New Roman';
+}
+
+.num-top{
+    position: absolute;
+    left: 700px;
+    top: 100px;
+}
+
+.num-bottom{
+    position: absolute;
+    left: 650px;
+    top: 955px;
+}
+
+.num-left{
+    position: absolute;
+    left: 250px;
+    top: 550px;
+}
+
+.num-right{
+    position: absolute;
+    left: 1090px;
+    top: 500px;
+}

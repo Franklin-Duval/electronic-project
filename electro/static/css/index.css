@@ -1,0 +1,95 @@
+.body{
+    background-image: url('../images/road.PNG');
+}
+
+.contents{
+    background-color: black;
+    margin-bottom: 100px;
+}
+
+.title{
+    font-size: 70px;
+    font-family: 'Times New Roman';
+    display: flex;
+    justify-content: center;
+    color: white;
+    margin-top: 100px;
+}
+
+/* ----- Navigation Bar ----- */
+.logo{
+    width: 210px;
+    height: 50px;
+}
+
+.navbar-nav li{
+	padding: 0 10px;
+}
+
+.navbar-nav li a{
+	color: black !important;
+	font-weight: 600;
+	float: right;
+	text-align: left;
+}
+
+#id{
+    color: black;
+}
+
+.icon{
+    padding: 20px;
+    margin-left: 150px;
+}
+
+.icon a{
+    color: black;
+    size: 20px;
+}
+
+form button{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+
+/* ----- Footer ----- */
+.foot{
+    /* background-color: rgb(20, 19, 19); */
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-image: url("../images/footer.jpg");
+}
+
+.foot p{
+    color: white;
+    margin-top: 15px;
+}
+
+.foot i{
+    background-color: gray;
+    padding: 7px;
+    border-radius: 30px;
+}
+
+.social-media{
+    color: white;
+    margin-top: 2px;
+    margin-top: 20px;
+}
+
+.logo-end{
+    height: 70px;
+    width: 70px;
+    border-radius: 25px;
+    margin-bottom: 20px;
+}
+
+/* @media screen and (min-width: 500px){
+    .logo-end{
+        height: 70px;
+        width: 70px;
+        border-radius: 25px;
+        margin-left: 100px;
+    }
+} */

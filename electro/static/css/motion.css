@@ -1,0 +1,114 @@
+/* ----------Top Cars------------*/
+
+.top-motion-left{
+    position: absolute;
+    left: 580px;
+    top: 200px;
+    
+    offset-path: path('m0,0 C10,250 -40,290 -400,290');
+}
+
+.top-motion-right{
+    position: absolute;
+    left: 580px;
+    top: 200px;
+    
+    offset-path: path('m0,0 C-150,570 50,500 540,490');
+}
+
+.top-motion-straight{
+    position: absolute;
+    left: 580px;
+    top: 200px;
+    
+    offset-path: path('m0,0 v850');
+}
+
+/* ----------Bottom Cars------------*/
+
+.bottom-motion-left{
+    position: absolute;
+    left: 700px;
+    top: 900px;
+    
+    offset-path: path('m0,0 C170,-520 -60,-480 -450,-470');
+}
+
+.bottom-motion-right{
+    position: absolute;
+    left: 700px;
+    top: 900px;
+    
+    offset-path: path('m0,0 C-20,-250 50,-270 450,-300');
+}
+
+.bottom-motion-straight{
+    position: absolute;
+    left: 730px;
+    top: 900px;
+    
+    offset-path: path('m0,0 v-820');
+}
+
+/* ----------Left Cars------------*/
+
+.left-motion-left{
+    position: absolute;
+    left: 250px;
+    top: 680px;
+    
+    offset-path: path('m0,0 C580,50 530,-100 500,-600');
+}
+
+.left-motion-right{
+    position: absolute;
+    left: 250px;
+    top: 680px;
+    
+    offset-path: path('m0,0 C300,0 350,50 330,350');
+}
+
+.left-motion-straight{
+    position: absolute;
+    left: 250px;
+    top: 680px;
+    
+    offset-path: path('m0,0 h850');
+}
+
+/* ----------Right Cars------------*/
+
+.right-motion-left{
+    position: absolute;
+    left: 1000px;
+    top: 440px;
+    
+    offset-path: path('m0,0 C-530,0 -520,70 -390,600');
+}
+
+.right-motion-right{
+    position: absolute;
+    left: 1000px;
+    top: 440px;
+    
+    offset-path: path('m0,0 C-250,0 -250,-50 -280,-360');
+}
+
+.right-motion-straight{
+    position: absolute;
+    left: 1000px;
+    top: 440px;
+    
+    offset-path: path('m0,0 h-750');
+}
+
+
+@keyframes move{
+    0% {
+        offset-distance: 0%;
+      }
+      100% {
+        offset-distance: 100%;
+        
+      }
+}
