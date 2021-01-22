@@ -1,5 +1,8 @@
 from django.db import models
 
+
+
+
 # Create your models here.
 class Feux(models.Model):
     green = models.SmallIntegerField(default=0)

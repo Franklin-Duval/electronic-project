@@ -21,7 +21,7 @@ from electro import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home', views.home, name='home'),
-    path('index', views.index, name='index'),
-    path('docs', views.docs, name='docs'),
-    path('', views.root),
+    path('brain',views.compute_time_send_response,name='brain'),
+    path('index',views.index,name='test'),
+    path('deactive',views.deactive),
 ]

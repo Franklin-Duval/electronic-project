@@ -109,6 +109,8 @@
       }
       100% {
         offset-distance: 100%;
+        background-color: transparent;
         
       }
 }
+
