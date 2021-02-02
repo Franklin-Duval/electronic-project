@@ -63,7 +63,7 @@ class TrafficController():
         self.sensors={}
         for i,((a1,a2),(b1,b2)) in enumerate(sensors):
             self.sensors[i]=[None,None]
-            self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
+            #self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
             #self.sensors[i][1]=DistanceSensor(b1,b2)#senseur voie
             print(f"(({a1},{a2}),({b1},{b2}))" )
             pass
