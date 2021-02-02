@@ -3,66 +3,142 @@ from django.shortcuts import redirect, render
 from django.http import Http404
 from django.http import JsonResponse,HttpResponse
 from .brain import brain
-from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from background_task import background
 import time
 import threading
+from gpiozero import DistanceSensor # detecteur de distance
 
 
-t = None
+########################################################
+
+#                FONCTIONNEMENT
+
+########################################################
+
+# dans la fonction background, on ecoute les capteurs dans le cas nominal et on envoie des posts vers le front
+# dans le cas de simulation, on poste vers le front mais le front repond immediatement, avec les nouvelles informations 
+# fournies par le simulateur
+
+
+# le feu est organisé comme suit [vert,jaune,rouge] donc les indices sont 0,1,2 respectivement
+
+#####################################################
+
+#               DECLARATION
+
+#####################################################
+
 threadForUpdatingState=None
-voie1=0
+transitions=[0,1,2,2]#l'etat initial de deux feux est 0 et pour les deux autres c'est 2, le contenu du tableau est les indices des feux alumes
 
-@background
-def do_something():
-    print("I'm a background ")
-
-
-
-def update_state_lights(traffic_light,color):
-    # change l'etat des leds
-    for el in traffic_light[color]:
-        GPIO.output(traffic_light[el],GPIO.LOW)
-    GPIO.output(traffic_light[color],GPIO.HIGH)
+#contient les numero de toutes les leds, numerotees de 1 à 4 dans cet ordre et les feux du vert au rouge CE TABLEAU NE DOIT JAMAIS CHANGER
+# exple : LEDS=[(23,4,5),(5,4,1),(6,4,6),(13,3,5)]
+# qui veut dire que le feu 1 est constitué des leds aux pins 23,4,5
 
 
-def background_process():
-    #cette fonction permet d'ecouter les capteurs ultrasons
-    global voie1
-    t=threading.currentThread()
-    while getattr(t,"do_run",True):
-        print("process started")
-        voie1+=1
-        print(voie1)
-        time.sleep(3)
-        print("process finished")
+#######################################################
+
+#           CLASSE UTILITAIRE
+
+#######################################################
+
+class TrafficController():
+    def __init__(self,leds,sensors):
+        self.nb=nb
+        self.leds=leds
+        self.state_phase1=0
+        self.state_phase2=2
+        #enregistrement des voies
+        for _,i in enumerate(self.leds):
+            self.voie[i]=0
+
+        # enregistrement des senseurs
+        for ((a1,a2),(b1,b2)),i in enumerate(sensors)):
+            self.sensors[i]=(None,None)
+            self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
+            self.sensors[i][1]=DistanceSensor(b1,b2)#senseur voie
+
+    def all_off(self):
+        #eteint tout le monde
+        for light in self.leds:
+            for led in light:
+                GPIO.output(led,GPIO.LOW)
+
+    def all_off(self):
+        #allume tout le monde
+        for light in self.leds:
+            for led in light:
+                GPIO.output(led,GPIO.HIGH)
+
+    def set_led_on(self,index_led,index_feu):
+        #allume une led precise sur un feu
+        assert index_led>=0 and index_led<=3 and index_feu>=0 and index_feu<=2
+        for led in self.leds[index_led]:
+            GPIO.output(led,GPIO.LOW)
+        GPIO.output(self.leds[index_feu],GPIO.HIGH)#ce qu'on veut vraiment alumer
+
         
-        #GPIO.output(GPIO_TRIGGER, True)
-     
-        # set Trigger after 0.01ms to LOW
-        #time.sleep(0.00001)
-        #GPIO.output(GPIO_TRIGGER, False)
-     
-        #StartTime = time.time()
-        #StopTime = time.time()
-     
-        # save StartTime
-        #while GPIO.input(GPIO_ECHO) == 0:
-        #    StartTime = time.time()
-     
-        # save time of arrival
-        #while GPIO.input(GPIO_ECHO) == 1:
-        #    StopTime = time.time()
-     
-        # time difference between start and arrival
-        #TimeElapsed = StopTime - StartTime
-        # multiply with the sonic speed (34300 cm/s)
-        # and divide by 2, because there and back
-        #distance = (TimeElapsed * 34300) / 2
-    print("stopped")
+    def listen(self):
+        #cette fonction permet d'ecouter les capteurs ultrasons et mettre a jour les variables 
+        t=threading.currentThread()
+        while getattr(t,"do_run",True):
+            #ecoute des senseurs de distance et mise a jour des parametres
+            for sensor,i in enumerate(self.sensors):
+                if(sensor[0].distance<seuil):
+                    self.voie[i]+=1
+                if(sensor[1].distance<seuil):
+                    self.voie[i]-=1
+            time.sleep(3)
+        print("stopped")
 
-def index(request):
+    
+    def set_phase1_on(self,led_state):
+        #allume une led precise des deux feux d'une phase
+        set_led_on(self.leds[0],led_state)
+        set_led_on(self.leds[2],led_state)
+
+
+    def set_phase2_on(self,led_state):
+        #allume une led precise des deux feux de l'autre
+        set_led_on(self.leds[1],led_state)
+        set_led_on(self.leds[3],led_state)
+
+
+
+    def switch_state(self):
+        #allume les leds en suivant les transitions
+        self.state_phase1=(self.state_phase1+1)%4
+        self.state_phase2=(self.state_phase2+1)%4
+        set_phase1_on(transitions[self.state_phase1])
+        set_phase2_on(transitions[self.state_phase2])
+        
+
+
+
+traffic_controller=TrafficController(leds=[(1,2,3),(3,4,5)],sensors=[((10,11),(4,5)),((7,8),(9,13))])
+
+##############################################################################
+
+#                                  VIEWS
+
+############################################################################
+
+
+# Create your views here.
+def home(request):
+    return render("You are at Home!")
+
+@csrf_exempt
+def compute_time_send_response(request):
+    # compute the time needed and return the green time
+    cars1=int(request.POST.get('cars1',0))
+    cars2=int(request.POST.get('cars2',0))
+    temps_vert=brain(cars1,cars2)
+    switch_state()#the state changes immediately as frontend asks
+    return JsonResponse({"result":temps_vert}, safe=False)
+
+
+def activate(request):
     #lance la simulation
     global t
     if t==None or not t.is_alive():
@@ -72,37 +148,12 @@ def index(request):
         t.start()
     return HttpResponse("main thread content")
 
-def deactive(request):
+
+def deactivate(request):
     #arrete la simulation
     global t
     global voie1
     t.do_run=False
     t.join()
     return HttpResponse(f"finished, result={voie1}")
-
-
-@csrf_exempt
-def compute_time_send_response(request):
-    # compute the time needed and return the green time
-    cars1=int(request.POST['cars1'][0])
-    cars2=int(request.POST['cars2'][0])
-    return JsonResponse({"result":brain(cars1,cars2)}, safe=False)
-
-
-def set_light(traffic_light,color):
-    return
-
-# Create your views here.
-def home(request):
-    #genere de facon aleatoire les voitures sur chaque voie
-    top = random.randrange(5, 10)  #generer entre 5 et 10 voitures sur les voies
-    top_n = [random.randrange(0,3) for i in range(0, top)]
-    bottom = random.randrange(5, 10)
-    bottom_n = [random.randrange(0,3) for i in range(0, bottom)]
-    left = random.randrange(5, 10)
-    left_n = [random.randrange(0,3) for i in range(0, left)]
-    right = random.randrange(5, 10)
-    right_n = [random.randrange(0,3) for i in range(0, right)]
-    print(top_n, bottom_n, left, right)
-    context = {
-        }
+    
