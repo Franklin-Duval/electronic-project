@@ -95,17 +95,17 @@ class TrafficController():
         while getattr(t,"do_run",True):
             #ecoute des senseurs de distance et mise a jour des parametres
             for i,sensor in enumerate(self.sensors):
-                print(f"sensor = ({sensor})")
-                if(self.sensors[sensor][0].distance>0.1):
+                print(f"sensor = ({self.sensors[sensor]})")
+                #if(self.sensors[sensor][0].distance>0.1):
                     # self.voie[i][0]+=1
-                    print(f" distance mesuree par le capteur {i} = {sensor[0].distance}",file=sys.stderr)
+                print(f" distance mesuree par le capteur {i} = {sensor[0].distance}",file=sys.stderr)
                 # if(sensor[0].distance>=dist_voie1 and sensor[0].distance<=dist_voie2):
                 #     self.voie[i][1]+=1
                 # if(sensor[1].distance<dist_voie1):
                 # #     self.voie[i][0]-=1
                 # if(sensor[1].distance>dist_voie1 and sensor[0].distance<=dist_voie2):
                 #     self.voie[i][1]-=1
-            time.sleep(0.5)
+            time.sleep(1)
         print("stopped")
 
     
