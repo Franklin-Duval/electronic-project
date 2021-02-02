@@ -162,6 +162,7 @@ def compute_time_send_response(request):
 def activate(request):
     #lance la simulation
     global t
+    AllMightyController.all_of()
     if t==None or not t.is_alive():
         print("start threading")
         t=threading.Thread(target=AllMightyController.listen, args=(), kwargs={})
@@ -173,6 +174,7 @@ def activate(request):
 def deactivate(request):
     #arrete la simulation
     global t
+    AllMightyController.all_off()
     t.do_run=False
     t.join()
     return HttpResponse("finished")
