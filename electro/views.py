@@ -109,12 +109,12 @@ class TrafficController():
     
     def set_phase1_on(self,led_state):
         #allume une led precise des deux feux d'une phase
-        set_led_on(self.leds[0],led_state)
+        self.set_led_on(self.leds[0],led_state)
 
 
     def set_phase2_on(self,led_state):
         #allume une led precise des deux feux de l'autre
-        set_led_on(self.leds[1],led_state)
+        self.set_led_on(self.leds[1],led_state)
 
 
 
@@ -130,7 +130,8 @@ class TrafficController():
 #declaration
 
 AllMightyController=TrafficController(leds=[(3,5,7),(11,13,15)])
-AllMightyController.set_led_on(1,1)
+#AllMightyController.set_led_on(1,1)
+AllMightyController.switch_state()
 
 ##############################################################################
 
