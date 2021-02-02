@@ -82,7 +82,7 @@ class TrafficController():
         assert index_led>=0 and index_led<=3 and index_feu>=0 and index_feu<=2
         for led in self.leds[index_led]:
             GPIO.output(led,GPIO.LOW)
-        GPIO.output(self.leds[index_feu],GPIO.HIGH)#ce qu'on veut vraiment alumer
+        GPIO.output(self.leds[index_led][index_feu],GPIO.HIGH)#ce qu'on veut vraiment alumer
 
         
     def listen(self):
