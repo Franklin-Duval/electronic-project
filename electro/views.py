@@ -98,7 +98,7 @@ class TrafficController():
                 print(f"sensor = ({self.sensors[sensor]})")
                 #if(self.sensors[sensor][0].distance>0.1):
                     # self.voie[i][0]+=1
-                print(f" distance mesuree par le capteur {i} = {sensor[0].distance}",file=sys.stderr)
+                print(f" distance mesuree par le capteur {i} = {self.sensors[sensor][0].distance}",file=sys.stderr)
                 # if(sensor[0].distance>=dist_voie1 and sensor[0].distance<=dist_voie2):
                 #     self.voie[i][1]+=1
                 # if(sensor[1].distance<dist_voie1):
