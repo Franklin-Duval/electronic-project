@@ -31,7 +31,7 @@ GPIO.setmode(GPIO.BOARD)
 #####################################################
 t=None
 threadForUpdatingState=None
-transitions=[0,1,2,2]#l'etat initial de deux feux est 0 et pour les deux autres c'est 2, le contenu du tableau est les indices des feux alumes
+transitions=[0,1,2,2] #l'etat initial de deux feux est 0 et pour les deux autres c'est 2, le contenu du tableau est les indices des feux alumes
 
 #contient les numero de toutes les leds, numerotees de 1 à 4 dans cet ordre et les feux du vert au rouge CE TABLEAU NE DOIT JAMAIS CHANGER
 # exple : LEDS=[(23,4,5),(5,4,1),(6,4,6),(13,3,5)]
@@ -81,6 +81,7 @@ class TrafficController():
         #allume une led precise sur un feu
         assert index_led>=0 and index_led<3 and index_feu>=0 and index_feu<2
         for led in self.leds[index_feu]:
+            print(f"Eteindre sur le feu {index_feu} la led numero {led} ")
             GPIO.output(led,GPIO.LOW)
         print(f"Allumer sur le feu {index_feu} la led numero {index_led} ")
         GPIO.output(self.leds[index_feu][index_led],GPIO.HIGH)#ce qu'on veut vraiment alumer
@@ -130,7 +131,7 @@ class TrafficController():
 
 #declaration
 
-AllMightyController=TrafficController(leds=[(3,5,7),(11,13,15)])
+AllMightyController=TrafficController(leds=[(7,5,3),(15,13,11)])
 #AllMightyController.set_led_on(1,1)
 #AllMightyController.switch_state()
 
