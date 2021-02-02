@@ -130,7 +130,7 @@ class TrafficController():
 
 #declaration
 
-AllMightyController=TrafficController(leds=[(7,5,3),(15,13,11)],sensors=((24,23),(None,None)))
+AllMightyController=TrafficController(leds=[(7,5,3),(15,13,11)],sensors=[((24,23),(None,None))])
 #AllMightyController.set_led_on(1,1)
 #AllMightyController.switch_state()
 
