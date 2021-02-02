@@ -10,7 +10,6 @@ import RPi.GPIO as GPIO
 from gpiozero import DistanceSensor # detecteur de distance
 import sys
 
-GPIO.setmode(GPIO.BOARD)
 
 ########################################################
 
