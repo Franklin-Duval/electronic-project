@@ -77,12 +77,13 @@ class TrafficController():
             for led in light:
                 GPIO.output(led,GPIO.HIGH)
 
-    def set_led_on(self,index_led,index_feu):
+    def set_led_on(self,index_feu,index_led):
         #allume une led precise sur un feu
-        assert index_led>=0 and index_led<=3 and index_feu>=0 and index_feu<=2
-        for led in self.leds[index_led]:
+        assert index_led>=0 and index_led<3 and index_feu>=0 and index_feu<2
+        for led in self.leds[index_feu]:
             GPIO.output(led,GPIO.LOW)
-        GPIO.output(self.leds[index_led][index_feu],GPIO.HIGH)#ce qu'on veut vraiment alumer
+        print(f"Allumer sur le feu {index_feu} la led numero {index_led} ")
+        GPIO.output(self.leds[index_feu][index_led],GPIO.HIGH)#ce qu'on veut vraiment alumer
 
         
     def listen(self):
