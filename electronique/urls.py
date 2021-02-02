@@ -22,6 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('home', views.home, name='home'),
     path('brain',views.compute_time_send_response,name='brain'),
-    path('index',views.index,name='test'),
-    path('deactive',views.deactive),
+    path('index',views.activate,name='test'),
+    path('deactive',views.deactivate),
 ]

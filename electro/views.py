@@ -6,8 +6,10 @@ from .brain import brain
 from django.views.decorators.csrf import csrf_exempt
 import time
 import threading
+#import Rpi.GPIO as GPIO
 from gpiozero import DistanceSensor # detecteur de distance
 
+#GPIO.setmode(GPIO.BOARD)
 
 ########################################################
 
@@ -43,20 +45,24 @@ transitions=[0,1,2,2]#l'etat initial de deux feux est 0 et pour les deux autres 
 #######################################################
 
 class TrafficController():
-    def __init__(self,leds,sensors):
+    def __init__(self,leds,sensors,nb=2):
         self.nb=nb
         self.leds=leds
         self.state_phase1=0
         self.state_phase2=2
         #enregistrement des voies
-        for _,i in enumerate(self.leds):
+        self.voie={}
+        for i,_ in enumerate(self.leds):
             self.voie[i]=0
-
+            
         # enregistrement des senseurs
-        for ((a1,a2),(b1,b2)),i in enumerate(sensors)):
-            self.sensors[i]=(None,None)
-            self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
-            self.sensors[i][1]=DistanceSensor(b1,b2)#senseur voie
+        self.sensors={}
+        for i,((a1,a2),(b1,b2)) in enumerate(sensors):
+            #self.sensors[i]=(None,None)
+            #self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
+            #self.sensors[i][1]=DistanceSensor(b1,b2)#senseur voie
+            print(f"(({a1},{a2}),({b1},{b2}))" )
+            pass
 
     def all_off(self):
         #eteint tout le monde
@@ -115,7 +121,7 @@ class TrafficController():
 
 
 
-traffic_controller=TrafficController(leds=[(1,2,3),(3,4,5)],sensors=[((10,11),(4,5)),((7,8),(9,13))])
+traffic_controller=TrafficController(leds=[(1,2,3),(3,4,5)],sensors=[((20,21),(23,24))])
 
 ##############################################################################
 
@@ -134,7 +140,7 @@ def compute_time_send_response(request):
     cars1=int(request.POST.get('cars1',0))
     cars2=int(request.POST.get('cars2',0))
     temps_vert=brain(cars1,cars2)
-    switch_state()#the state changes immediately as frontend asks
+    # switch_state()#the state changes immediately as frontend asks
     return JsonResponse({"result":temps_vert}, safe=False)
 
 
