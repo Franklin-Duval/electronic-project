@@ -162,7 +162,7 @@ def compute_time_send_response(request):
 def activate(request):
     #lance la simulation
     global t
-    AllMightyController.all_of()
+    AllMightyController.all_off()
     if t==None or not t.is_alive():
         print("start threading")
         t=threading.Thread(target=AllMightyController.listen, args=(), kwargs={})
