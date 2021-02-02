@@ -8,6 +8,7 @@ import time
 import threading
 import RPi.GPIO as GPIO
 from gpiozero import DistanceSensor # detecteur de distance
+import sys
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -59,8 +60,8 @@ class TrafficController():
         # enregistrement des senseurs
         self.sensors={}
         for i,((a1,a2),(b1,b2)) in enumerate(sensors):
-            #self.sensors[i]=(None,None)
-            #self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
+            self.sensors[i]=(None,None)
+            self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
             #self.sensors[i][1]=DistanceSensor(b1,b2)#senseur voie
             print(f"(({a1},{a2}),({b1},{b2}))" )
             pass
@@ -85,27 +86,25 @@ class TrafficController():
             GPIO.output(led,GPIO.LOW)
         print(f"Allumer sur le feu {index_feu} la led numero {index_led} ")
         GPIO.output(self.leds[index_feu][index_led],GPIO.HIGH)#ce qu'on veut vraiment alumer
-
         
     def listen(self):
         dist_voie1=0.2
-        dist_voie2=1
+        dist_voie2=0.5
         #cette fonction permet d'ecouter les capteurs ultrasons et mettre a jour les variables 
         t=threading.currentThread()
         while getattr(t,"do_run",True):
-            print("ecoute")
             #ecoute des senseurs de distance et mise a jour des parametres
             for sensor,i in enumerate(self.sensors):
-                if(sensor[0].distance<dist_voie1):
+                if(sensor[0].distance>0.1):
                     self.voie[i][0]+=1
-                if(sensor[0].distance>=dist_voie1 and sensor[0].distance<=dist_voie2):
-                    self.voie[i][1]+=1
-                if(sensor[1].distance<dist_voie1):
-                    self.voie[i][0]-=1
-                if(sensor[1].distance>dist_voie1 and sensor[0].distance<=dist_voie2):
-                    self.voie[i][1]-=1
-            time.sleep(1)
-            print("1-ecoute")
+                    print(f" distance mesuree par le capteur {i} = {sensor[0].distance}",file=sys.stderr)
+                # if(sensor[0].distance>=dist_voie1 and sensor[0].distance<=dist_voie2):
+                #     self.voie[i][1]+=1
+                # if(sensor[1].distance<dist_voie1):
+                # #     self.voie[i][0]-=1
+                # if(sensor[1].distance>dist_voie1 and sensor[0].distance<=dist_voie2):
+                #     self.voie[i][1]-=1
+            time.sleep(0.5)
         print("stopped")
 
     
@@ -146,6 +145,8 @@ AllMightyController=TrafficController(leds=[(7,5,3),(15,13,11)])
 def home(request):
     AllMightyController.switch_state()
     return HttpResponse("You are at Home!")
+
+
 
 @csrf_exempt
 def compute_time_send_response(request):
