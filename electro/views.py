@@ -6,7 +6,7 @@ from .brain import brain
 from django.views.decorators.csrf import csrf_exempt
 import time
 import threading
-import Rpi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from gpiozero import DistanceSensor # detecteur de distance
 
 GPIO.setmode(GPIO.BOARD)
