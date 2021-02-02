@@ -6,10 +6,10 @@ from .brain import brain
 from django.views.decorators.csrf import csrf_exempt
 import time
 import threading
-#import Rpi.GPIO as GPIO
+import Rpi.GPIO as GPIO
 from gpiozero import DistanceSensor # detecteur de distance
 
-#GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BOARD)
 
 ########################################################
 
@@ -129,8 +129,8 @@ class TrafficController():
 
 #declaration
 
-AllMightyController=TrafficController(leds=[(1,2,3),(3,4,5)])
-# AllMightyController.all_on()
+AllMightyController=TrafficController(leds=[(3,5,7),(11,13,15)])
+AllMightyController.all_on()
 
 ##############################################################################
 
@@ -163,7 +163,7 @@ def activate(request):
         t=threading.Thread(target=AllMightyController.listen, args=(), kwargs={})
         t.setDaemon(True)
         t.start()
-    return HttpResponse("main thread content")
+    return HttpResponse("started")
 
 
 def deactivate(request):
