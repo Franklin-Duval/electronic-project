@@ -132,7 +132,7 @@ class TrafficController():
 
 AllMightyController=TrafficController(leds=[(3,5,7),(11,13,15)])
 #AllMightyController.set_led_on(1,1)
-AllMightyController.switch_state()
+#AllMightyController.switch_state()
 
 ##############################################################################
 
@@ -143,7 +143,8 @@ AllMightyController.switch_state()
 
 # Create your views here.
 def home(request):
-    return render("You are at Home!")
+    AllMightyController.switch_state()
+    return HttpResponse("You are at Home!")
 
 @csrf_exempt
 def compute_time_send_response(request):
