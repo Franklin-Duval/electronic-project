@@ -29,7 +29,7 @@ from gpiozero import DistanceSensor # detecteur de distance
 #               DECLARATION
 
 #####################################################
-
+t=None
 threadForUpdatingState=None
 transitions=[0,1,2,2]#l'etat initial de deux feux est 0 et pour les deux autres c'est 2, le contenu du tableau est les indices des feux alumes
 
@@ -40,20 +40,21 @@ transitions=[0,1,2,2]#l'etat initial de deux feux est 0 et pour les deux autres 
 
 #######################################################
 
-#           CLASSE UTILITAIRE
+#                   CLASSE UTILITAIRE
 
 #######################################################
 
 class TrafficController():
-    def __init__(self,leds,sensors,nb=2):
+    def __init__(self,leds,sensors=[],nb=2):
         self.nb=nb
         self.leds=leds
         self.state_phase1=0
         self.state_phase2=2
         #enregistrement des voies
         self.voie={}
-        for i,_ in enumerate(self.leds):
+        for i,led in enumerate(self.leds):
             self.voie[i]=0
+            #GPIO.setup(led,GPIO.OUTPUT)
             
         # enregistrement des senseurs
         self.sensors={}
@@ -70,7 +71,7 @@ class TrafficController():
             for led in light:
                 GPIO.output(led,GPIO.LOW)
 
-    def all_off(self):
+    def all_on(self):
         #allume tout le monde
         for light in self.leds:
             for led in light:
@@ -85,29 +86,35 @@ class TrafficController():
 
         
     def listen(self):
+        dist_voie1=0.2
+        dist_voie2=1
         #cette fonction permet d'ecouter les capteurs ultrasons et mettre a jour les variables 
         t=threading.currentThread()
         while getattr(t,"do_run",True):
+            print("ecoute")
             #ecoute des senseurs de distance et mise a jour des parametres
             for sensor,i in enumerate(self.sensors):
-                if(sensor[0].distance<seuil):
-                    self.voie[i]+=1
-                if(sensor[1].distance<seuil):
-                    self.voie[i]-=1
-            time.sleep(3)
+                if(sensor[0].distance<dist_voie1):
+                    self.voie[i][0]+=1
+                if(sensor[0].distance>=dist_voie1 and sensor[0].distance<=dist_voie2):
+                    self.voie[i][1]+=1
+                if(sensor[1].distance<dist_voie1):
+                    self.voie[i][0]-=1
+                if(sensor[1].distance>dist_voie1 and sensor[0].distance<=dist_voie2):
+                    self.voie[i][1]-=1
+            time.sleep(1)
+            print("1-ecoute")
         print("stopped")
 
     
     def set_phase1_on(self,led_state):
         #allume une led precise des deux feux d'une phase
         set_led_on(self.leds[0],led_state)
-        set_led_on(self.leds[2],led_state)
 
 
     def set_phase2_on(self,led_state):
         #allume une led precise des deux feux de l'autre
         set_led_on(self.leds[1],led_state)
-        set_led_on(self.leds[3],led_state)
 
 
 
@@ -120,8 +127,10 @@ class TrafficController():
         
 
 
+#declaration
 
-traffic_controller=TrafficController(leds=[(1,2,3),(3,4,5)],sensors=[((20,21),(23,24))])
+AllMightyController=TrafficController(leds=[(1,2,3),(3,4,5)])
+# AllMightyController.all_on()
 
 ##############################################################################
 
@@ -140,7 +149,9 @@ def compute_time_send_response(request):
     cars1=int(request.POST.get('cars1',0))
     cars2=int(request.POST.get('cars2',0))
     temps_vert=brain(cars1,cars2)
-    # switch_state()#the state changes immediately as frontend asks
+    print("modification de la maquette")
+    
+    # AllMightyController.switch_state()#the state changes immediately as frontend asks
     return JsonResponse({"result":temps_vert}, safe=False)
 
 
@@ -149,7 +160,7 @@ def activate(request):
     global t
     if t==None or not t.is_alive():
         print("start threading")
-        t=threading.Thread(target=background_process, args=(), kwargs={})
+        t=threading.Thread(target=AllMightyController.listen, args=(), kwargs={})
         t.setDaemon(True)
         t.start()
     return HttpResponse("main thread content")
@@ -158,8 +169,6 @@ def activate(request):
 def deactivate(request):
     #arrete la simulation
     global t
-    global voie1
     t.do_run=False
     t.join()
-    return HttpResponse(f"finished, result={voie1}")
-    
+    return HttpResponse("finished")

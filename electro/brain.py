@@ -1,7 +1,8 @@
-def brain(cars1, cars2):
-    a=max(cars1,cars2);
+def brain(P1,P2,P3,P4):
+    #P1,P2,P3,P4 representent les pressions sur les differentes voies
+    a=max(P1,P2);
     tol=5
     if(a>tol):
-        return min(a,10)*1000#entre deux valeurs
+        return min(a*1000,9000)#entre deux valeurs
     else:
-        return 2000
+        return 4000
