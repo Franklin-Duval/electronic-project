@@ -10,8 +10,6 @@ import RPi.GPIO as GPIO
 from gpiozero import DistanceSensor # detecteur de distance
 import sys
 
-
-GPIO.cleanup()
 GPIO.setmode(GPIO.BOARD)
 
 ########################################################
@@ -63,7 +61,7 @@ class TrafficController():
         self.sensors={}
         for i,((a1,a2),(b1,b2)) in enumerate(sensors):
             self.sensors[i]=[None,None]
-            #self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
+            self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
             #self.sensors[i][1]=DistanceSensor(b1,b2)#senseur voie
             print(f"(({a1},{a2}),({b1},{b2}))" )
             pass
@@ -155,7 +153,7 @@ def compute_time_send_response(request):
     # compute the time needed and return the green time
     cars1=int(request.POST.get('cars1',0))
     cars2=int(request.POST.get('cars2',0))
-    temps_vert=brain(cars1,cars2)
+    temps_vert=brain(cars1,cars2,0,0)
     print("modification de la maquette")
     AllMightyController.switch_state()
     # AllMightyController.switch_state()#the state changes immediately as frontend asks
