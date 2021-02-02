@@ -122,8 +122,8 @@ class TrafficController():
         #allume les leds en suivant les transitions
         self.state_phase1=(self.state_phase1+1)%4
         self.state_phase2=(self.state_phase2+1)%4
-        set_phase1_on(transitions[self.state_phase1])
-        set_phase2_on(transitions[self.state_phase2])
+        self.set_phase1_on(transitions[self.state_phase1])
+        self.set_phase2_on(transitions[self.state_phase2])
         
 
 
