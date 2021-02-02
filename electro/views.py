@@ -130,7 +130,7 @@ class TrafficController():
 #declaration
 
 AllMightyController=TrafficController(leds=[(3,5,7),(11,13,15)])
-AllMightyController.all_off()
+AllMightyController.set_led_on(1,1)
 
 ##############################################################################
 
