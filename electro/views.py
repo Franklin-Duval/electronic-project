@@ -57,7 +57,7 @@ class TrafficController():
             GPIO.setup(led,GPIO.OUT)
             
         # enregistrement des senseurs
-        self.sensors=[]
+        self.sensors={}
         for i,((a1,a2),(b1,b2)) in enumerate(sensors):
             self.sensors[i]=[None,None]
             self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
@@ -96,7 +96,7 @@ class TrafficController():
             #ecoute des senseurs de distance et mise a jour des parametres
             for i,sensor in enumerate(self.sensors):
                 print(f"sensor = ({sensor})")
-                if(sensor[0].distance>0.1):
+                if(self.sensors[sensor][0].distance>0.1):
                     # self.voie[i][0]+=1
                     print(f" distance mesuree par le capteur {i} = {sensor[0].distance}",file=sys.stderr)
                 # if(sensor[0].distance>=dist_voie1 and sensor[0].distance<=dist_voie2):
