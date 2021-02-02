@@ -54,7 +54,7 @@ class TrafficController():
         self.voie={}
         for i,led in enumerate(self.leds):
             self.voie[i]=0
-            #GPIO.setup(led,GPIO.OUTPUT)
+            GPIO.setup(led,GPIO.OUTPUT)
             
         # enregistrement des senseurs
         self.sensors={}
