@@ -154,7 +154,7 @@ def compute_time_send_response(request):
     cars2=int(request.POST.get('cars2',0))
     temps_vert=brain(cars1,cars2)
     print("modification de la maquette")
-    
+    AllMightyController.switch_state()
     # AllMightyController.switch_state()#the state changes immediately as frontend asks
     return JsonResponse({"result":temps_vert}, safe=False)
 
