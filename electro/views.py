@@ -175,6 +175,7 @@ def deactivate(request):
     #arrete la simulation
     global t
     AllMightyController.all_off()
-    t.do_run=False
-    t.join()
+    if t!=None:
+        t.do_run=False
+        t.join()
     return HttpResponse("finished")
