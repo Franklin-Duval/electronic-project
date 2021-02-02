@@ -93,7 +93,7 @@ class TrafficController():
         t=threading.currentThread()
         while getattr(t,"do_run",True):
             #ecoute des senseurs de distance et mise a jour des parametres
-            for sensor,i in enumerate(self.sensors):
+            for i,sensor in enumerate(self.sensors):
                 if(sensor[0].distance>0.1):
                     self.voie[i][0]+=1
                     print(f" distance mesuree par le capteur {i} = {sensor[0].distance}",file=sys.stderr)
