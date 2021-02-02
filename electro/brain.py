@@ -3,6 +3,6 @@ def brain(P1,P2,P3,P4):
     a=max(P1,P2)
     tol=5
     if(a>tol):
-        return min(a*1000,9000)#entre deux valeurs
+        return min(a,9)#entre deux valeurs
     else:
-        return 4000
+        return 4
