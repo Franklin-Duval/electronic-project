@@ -5,4 +5,4 @@ def brain(P1,P2):
     if(a>tol):
         return min(a,9)#entre deux valeurs
     else:
-        return 4
+        return 5
