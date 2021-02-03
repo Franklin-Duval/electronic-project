@@ -202,7 +202,10 @@ def compute_time_send_response(request):
         cars2=int(data['south'])   
         cars3=int(data['east'])
         cars4=int(data['west'])
-        temps_vert=brain(cars1,cars2)
+        if i%2==0:
+            temps_vert=brain(cars1,cars2)
+        else:
+            temps_vert=brain(cars3,cars4)
     except:
         pass
     print("modification de la maquette")
@@ -227,8 +230,8 @@ def deactivate(request):
     #arrete la simulation
     global t
     AllMightyController.all_off()
-    AllMightyController.state_phase1=0
-    AllMightyController.state_phase2=0
+    #AllMightyController.state_phase1=0
+    #AllMightyController.state_phase2=2
     if t!=None:
         t.do_run=False
         t.join()
