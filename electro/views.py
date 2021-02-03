@@ -203,7 +203,7 @@ def compute_time_send_response(request):
         cars2=int(data['south'])   
         cars3=int(data['east'])
         cars4=int(data['west'])
-        if (phase==True):
+        if (phase==False):
             print(f"!!!!!!!!!!!!    les valeurs a considerer sont {cars1} et {cars2}")
             temps_vert=brain(cars1,cars2)
         else:
