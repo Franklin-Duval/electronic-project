@@ -194,15 +194,17 @@ def home(request):
 def compute_time_send_response(request):
     # compute the time needed and return the green time
     print(" request body ",request.body)
-    data=json.loads(request.body.decode("utf-8"))
-    print(data)
-    cars1=int(data['cars1'])
-    cars2=int(data['cars2'])   
-    cars2=int(data['cars2'])
-    cars2=int(data['cars2'])
-
-
-    temps_vert=brain(cars1,cars2,0,0)
+    temps_vert=0
+    try:
+        data=json.loads(request.body.decode("utf-8"))
+        print(data)
+        cars1=int(data['north'])
+        cars2=int(data['south'])   
+        cars3=int(data['east'])
+        cars4=int(data['west'])
+        temps_vert=brain(cars1,cars2)
+    except:
+        pass
     print("modification de la maquette")
     AllMightyController.switch_state()
     # AllMightyController.switch_state()#the state changes immediately as frontend asks
@@ -225,6 +227,8 @@ def deactivate(request):
     #arrete la simulation
     global t
     AllMightyController.all_off()
+    AllMightyController.state_phase1=0
+    AllMightyController.state_phase2=0
     if t!=None:
         t.do_run=False
         t.join()
