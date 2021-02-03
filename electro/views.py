@@ -193,7 +193,7 @@ def home(request):
 @csrf_exempt
 def compute_time_send_response(request):
     # compute the time needed and return the green time
-    data=json.loads(request.body)
+    data=json.loads(request.body.decode("utf-8"))
     print(data)
     cars1=int(data['cars1'])
     cars2=int(data['cars2'])   
