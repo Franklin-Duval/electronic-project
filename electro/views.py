@@ -87,9 +87,9 @@ class TrafficController():
         #allume une led precise sur un feu
         assert index_led>=0 and index_led<3 and index_feu>=0 and index_feu<2
         for led in self.leds[index_feu]:
-            print(f"Eteindre sur le feu {index_feu} la led numero {led} ")
+            #print(f"Eteindre sur le feu {index_feu} la led numero {led} ")
             GPIO.output(led,GPIO.LOW)
-        print(f"Allumer sur le feu {index_feu} la led numero {index_led} ")
+        #print(f"Allumer sur le feu {index_feu} la led numero {index_led} ")
         GPIO.output(self.leds[index_feu][index_led],GPIO.HIGH)#ce qu'on veut vraiment alumer
     
 
@@ -129,25 +129,26 @@ class TrafficController():
         #cette fonction permet d'ecouter les capteurs ultrasons et mettre a jour les variables 
         t=threading.currentThread() 
         while getattr(t,"do_run",True):
-            dist1 = self.distance(16,18)
-            dist2 = self.distance ()
+            dist1 = self.distance(GPIO_ECHO,GPIO_TRIGGER)
+            #dist2 = self.distance ()
 
             # incrementer les voitures
             if (dist1<20) and not car_entrance:
                 car_entrance=True
                 nb_voie+=1
-                print(f"le nombre de voitures est {nb_voie}")
+                print("Voiture comptée!")
+                print(f"LE NOMBRE DE VOITURES SUR LA VOIE EST {nb_voie}")
             if (dist1>=20):
                 car_entrance=False
 
             
             #decrementer les voitures
-            if (dist2<20) and not car_outance:
-                car_outance=True
-                nb_voie-=1
-                print(f"le nombre de voitures est {nb_voie}")
-            if (dist2>=20):
-                car_outance=False
+            # if (dist2<20) and not car_outance:
+            #     car_outance=True
+            #     nb_voie-=1
+            #     print(f"le nombre de voitures est {nb_voie}")
+            # if (dist2>=20):
+            #     car_outance=False
             time.sleep(0.5)
     
     def set_phase1_on(self,led_state):
@@ -194,17 +195,18 @@ def home(request):
 def compute_time_send_response(request):
     # compute the time needed and return the green time
     global phase
-    print(" request body ",request.body)
+    #print(" request body ",request.body)
     temps_vert=5
     try:
         data=json.loads(request.body.decode("utf-8"))
-        print(data)
+        print("DONNEES RECUES DU SIMULATEUR WEB : ",data)
         cars1=int(data['north'])
         cars2=int(data['south'])   
         cars3=int(data['east'])
         cars4=int(data['west'])
+        print("Calcul...")
         if (phase==False):
-            print(f"!!!!!!!!!!!!    les valeurs a considerer sont {cars1} et {cars2}")
+            #print(f"!!!!!!!!!!!!    les valeurs a considerer sont {cars1} et {cars2}")
             temps_vert=brain(cars1,cars2)
         else:
             temps_vert=brain(cars3,cars4)
@@ -212,7 +214,7 @@ def compute_time_send_response(request):
     except Exception  as e:
         print(e)
         pass
-    print("modification de la maquette")
+    #print("modification de la maquette")
     AllMightyController.switch_state()
     # AllMightyController.switch_state()#the state changes immediately as frontend asks
     return JsonResponse({"result":temps_vert}, safe=False)
@@ -240,3 +242,7 @@ def deactivate(request):
         t.do_run=False
         t.join()
     return HttpResponse("finished")
+
+
+def nb_voie(request):
+    return HttpResponse(f"{nb_voie}")

@@ -24,4 +24,6 @@ urlpatterns = [
     path('brain/',views.compute_time_send_response,name='brain'),
     path('activate',views.activate,name='test'),
     path('deactivate',views.deactivate),
+    path('voies',views.nb_voie),
+    
 ]
