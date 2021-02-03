@@ -194,7 +194,7 @@ def home(request):
 def compute_time_send_response(request):
     # compute the time needed and return the green time
     print(" request body ",request.body)
-    temps_vert=0
+    temps_vert=5
     try:
         data=json.loads(request.body.decode("utf-8"))
         print(data)
@@ -203,10 +203,12 @@ def compute_time_send_response(request):
         cars3=int(data['east'])
         cars4=int(data['west'])
         #if i%2==0:
+        print(f" les valeurs a considerer sont {cars1} et {cars2}")
         temps_vert=brain(cars1,cars2)
         #else:
         #    temps_vert=brain(cars3,cars4)
-    except:
+    except Exception  as e:
+        print(e)
         pass
     print("modification de la maquette")
     AllMightyController.switch_state()
