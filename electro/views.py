@@ -9,12 +9,14 @@ import threading
 import RPi.GPIO as GPIO
 from gpiozero import DistanceSensor # detecteur de distance
 import sys
+import json
 
 GPIO.setmode(GPIO.BOARD)
 
 GPIO_TRIGGER = 16
 GPIO_ECHO = 18
- 
+
+nb_voie=0
 #set GPIO direction (IN / OUT)
 GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
 GPIO.setup(GPIO_ECHO, GPIO.IN)
@@ -66,13 +68,7 @@ class TrafficController():
             GPIO.setup(led,GPIO.OUT)
             
         # enregistrement des senseurs
-        self.sensors={}
-        for i,((a1,a2),(b1,b2)) in enumerate(sensors):
-            self.sensors[i]=[None,None]
-            #self.sensors[i][0]=DistanceSensor(a1,a2)#senseur voie
-            #self.sensors[i][1]=DistanceSensor(b1,b2)#senseur voie
-            print(f"(({a1},{a2}),({b1},{b2}))" )
-            pass
+        self.sensors=sensors
         print(f"LES SENSEURS - {self.sensors}")
 
     def all_off(self):
@@ -125,22 +121,34 @@ class TrafficController():
     
         return distance
     def listen(self):
+        global nb_voie
         dist_voie1=0.2
         dist_voie2=0.5
-        nb_voie=0
-        car_passing=False
+        car_entrance=False
+        car_outance=False
         #cette fonction permet d'ecouter les capteurs ultrasons et mettre a jour les variables 
         t=threading.currentThread() 
         while getattr(t,"do_run",True):
-            dist = self.distance(16,18)
-            if (dist<20) and not car_passing:
-                car_passing=True
+            dist1 = self.distance(16,18)
+            dist2 = self.distance ()
+
+            # incrementer les voitures
+            if (dist1<20) and not car_entrance:
+                car_entrance=True
                 nb_voie+=1
                 print(f"le nombre de voitures est {nb_voie}")
-            if (dist>=20):
-                car_passing=False
-            time.sleep(1)
+            if (dist1>=20):
+                car_entrance=False
 
+            
+            #decrementer les voitures
+            if (dist2<20) and not car_outance:
+                car_outance=True
+                nb_voie-=1
+                print(f"le nombre de voitures est {nb_voie}")
+            if (dist2>=20):
+                car_outance=False
+            time.sleep(0.5)
     
     def set_phase1_on(self,led_state):
         #allume une led precise des deux feux d'une phase
@@ -164,7 +172,7 @@ class TrafficController():
 
 #declaration
 
-AllMightyController=TrafficController(leds=[(7,5,3),(15,13,11)],sensors=[((18,16),(None,None))])
+AllMightyController=TrafficController(leds=[(7,5,3),(15,13,11)],sensors=((16,18),(None,None)))
 #AllMightyController.set_led_on(1,1)
 #AllMightyController.switch_state()
 
@@ -185,8 +193,13 @@ def home(request):
 @csrf_exempt
 def compute_time_send_response(request):
     # compute the time needed and return the green time
-    cars1=int(request.POST.get('cars1',0))
-    cars2=int(request.POST.get('cars2',0))
+    data=json.loads(request.body)
+    cars1=int(data['cars1'])
+    cars2=int(data['cars2'])   
+    cars2=int(data['cars2'])
+    cars2=int(data['cars2'])
+
+
     temps_vert=brain(cars1,cars2,0,0)
     print("modification de la maquette")
     AllMightyController.switch_state()
