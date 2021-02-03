@@ -11,6 +11,15 @@ from gpiozero import DistanceSensor # detecteur de distance
 import sys
 
 GPIO.setmode(GPIO.BOARD)
+
+GPIO_TRIGGER = 16
+GPIO_ECHO = 18
+ 
+#set GPIO direction (IN / OUT)
+GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
+GPIO.setup(GPIO_ECHO, GPIO.IN)
+
+
 ########################################################
 
 #                FONCTIONNEMENT
@@ -86,29 +95,44 @@ class TrafficController():
             GPIO.output(led,GPIO.LOW)
         print(f"Allumer sur le feu {index_feu} la led numero {index_led} ")
         GPIO.output(self.leds[index_feu][index_led],GPIO.HIGH)#ce qu'on veut vraiment alumer
-        
+    
+
+
+    def distance(self):
+        # set Trigger to HIGH
+        GPIO.output(GPIO_TRIGGER, True)
+    
+        # set Trigger after 0.01ms to LOW
+        time.sleep(0.00001)
+        GPIO.output(GPIO_TRIGGER, False)
+    
+        StartTime = time.time()
+        StopTime = time.time()
+    
+        # save StartTime
+        while GPIO.input(GPIO_ECHO) == 0:
+            StartTime = time.time()
+    
+        # save time of arrival
+        while GPIO.input(GPIO_ECHO) == 1:
+            StopTime = time.time()
+    
+        # time difference between start and arrival
+        TimeElapsed = StopTime - StartTime
+        # multiply with the sonic speed (34300 cm/s)
+        # and divide by 2, because there and back
+        distance = (TimeElapsed * 34300) / 2
+    
+        return distance
     def listen(self):
         dist_voie1=0.2
         dist_voie2=0.5
         #cette fonction permet d'ecouter les capteurs ultrasons et mettre a jour les variables 
-        t=threading.currentThread()
+        t=threading.currentThread() 
         while getattr(t,"do_run",True):
-            #ecoute des senseurs de distance et mise a jour des parametres
-            for i,sensor in enumerate(self.sensors):
-                #print(f"sensor = ({self.sensors[sensor]})")
-                #if(self.sensors[sensor][0].distance>0.1):
-                    # self.voie[i][0]+=1
-                #print("ok")
-                print(f" distance mesuree par le capteur {i} = {self.sensors[sensor][0].distance}",file=sys.stderr)
-                # if(sensor[0].distance>=dist_voie1 and sensor[0].distance<=dist_voie2):
-                #     self.voie[i][1]+=1
-                # if(sensor[1].distance<dist_voie1):
-                # #     self.voie[i][0]-=1
-                # if(sensor[1].distance>dist_voie1 and sensor[0].distance<=dist_voie2):
-                #     self.voie[i][1]-=1
-            #print("ecoute")
-            time.sleep(0.3)
-        print("stopped")
+            dist = distance()
+            print ("Measured Distance = %.1f cm" % dist)
+            time.sleep(1)
 
     
     def set_phase1_on(self,led_state):
