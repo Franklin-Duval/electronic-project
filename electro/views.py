@@ -129,7 +129,7 @@ class TrafficController():
         #cette fonction permet d'ecouter les capteurs ultrasons et mettre a jour les variables 
         t=threading.currentThread() 
         while getattr(t,"do_run",True):
-            dist1 = self.distance(GPIO_ECHO,GPIO_TRIGGER)
+            dist1 = self.distance(GPIO_TRIGGER,GPIO_ECHO)
             #dist2 = self.distance ()
 
             # incrementer les voitures
