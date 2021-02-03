@@ -15,7 +15,7 @@ GPIO.setmode(GPIO.BOARD)
 
 GPIO_TRIGGER = 16
 GPIO_ECHO = 18
-#phase=i
+phase=True
 nb_voie=0
 #set GPIO direction (IN / OUT)
 GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
@@ -193,6 +193,7 @@ def home(request):
 @csrf_exempt
 def compute_time_send_response(request):
     # compute the time needed and return the green time
+    global phase
     print(" request body ",request.body)
     temps_vert=5
     try:
@@ -202,11 +203,12 @@ def compute_time_send_response(request):
         cars2=int(data['south'])   
         cars3=int(data['east'])
         cars4=int(data['west'])
-        #if i%2==0:
-        print(f" les valeurs a considerer sont {cars1} et {cars2}")
-        temps_vert=brain(cars1,cars2)
-        #else:
-        #    temps_vert=brain(cars3,cars4)
+        if (phase==True):
+            print(f" les valeurs a considerer sont {cars1} et {cars2}")
+            temps_vert=brain(cars1,cars2)
+        else:
+            temps_vert=brain(cars3,cars4)
+        phase=not phase
     except Exception  as e:
         print(e)
         pass
