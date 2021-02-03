@@ -98,23 +98,23 @@ class TrafficController():
     
 
 
-    def distance(self):
+    def distance(self,trigger,echo):
         # set Trigger to HIGH
-        GPIO.output(GPIO_TRIGGER, True)
+        GPIO.output(trigger, True)
     
         # set Trigger after 0.01ms to LOW
         time.sleep(0.00001)
-        GPIO.output(GPIO_TRIGGER, False)
+        GPIO.output(trigger, False)
     
         StartTime = time.time()
         StopTime = time.time()
     
         # save StartTime
-        while GPIO.input(GPIO_ECHO) == 0:
+        while GPIO.input(echo) == 0:
             StartTime = time.time()
     
         # save time of arrival
-        while GPIO.input(GPIO_ECHO) == 1:
+        while GPIO.input(echo) == 1:
             StopTime = time.time()
     
         # time difference between start and arrival
@@ -127,11 +127,18 @@ class TrafficController():
     def listen(self):
         dist_voie1=0.2
         dist_voie2=0.5
+        nb_voie=0
+        car_passing=False
         #cette fonction permet d'ecouter les capteurs ultrasons et mettre a jour les variables 
         t=threading.currentThread() 
         while getattr(t,"do_run",True):
-            dist = distance()
-            print ("Measured Distance = %.1f cm" % dist)
+            dist = self.distance(16,18)
+            if (dist<20) and not car_passing:
+                car_passing=True
+                nb_voie+=1
+                print(f"le nombre de voitures est {nb_voie}")
+            if (dist>=20):
+                car_passing=False
             time.sleep(1)
 
     
